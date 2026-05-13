@@ -1,0 +1,7 @@
+spotipy
+requests
+pandas
+pyarrow
+boto3==1.43.0
+python-dotenv
+s3fs

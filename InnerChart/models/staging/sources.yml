@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: streamingdata
+    database: InnerChart
+    schema: STREAMINGDATA
+    tables:
+      - name: spotify_top_tracks
+      - name: spotify_top_artists
+      - name: lastfm_top_tracks
+      - name: lastfm_top_artists
+      - name: billboard_hot100
