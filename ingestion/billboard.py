@@ -1,7 +1,10 @@
+import os
 import requests
 import pandas as pd
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
+
+os.makedirs("data", exist_ok=True)
 
 #get the data
 url = "https://raw.githubusercontent.com/mhollingshead/billboard-hot-100/main/recent.json"

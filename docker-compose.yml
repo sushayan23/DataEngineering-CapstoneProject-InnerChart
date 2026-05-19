@@ -1,0 +1,94 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: innerchart_postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+
+  airflow-init:
+    build: .
+    container_name: innerchart_airflow_init
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      SPOTIPY_CACHE_PATH: /opt/airflow/.cache
+    env_file:
+      - .env
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - .:/opt/airflow/project
+      - ~/.dbt:/opt/airflow/.dbt
+      - ./.cache:/opt/airflow/.cache
+    command: >
+      bash -c "airflow db init &&
+      airflow users create
+      --username airflow
+      --password airflow
+      --firstname Admin
+      --lastname User
+      --role Admin
+      --email admin@innerchart.com"
+
+  airflow-webserver:
+    build: .
+    container_name: innerchart_airflow_webserver
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      SPOTIPY_CACHE_PATH: /opt/airflow/.cache
+    env_file:
+      - .env
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - .:/opt/airflow/project
+      - ~/.dbt:/opt/airflow/.dbt
+      - ./.cache:/opt/airflow/.cache
+    ports:
+      - "8080:8080"
+    command: airflow webserver
+
+  airflow-scheduler:
+    build: .
+    container_name: innerchart_airflow_scheduler
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      SPOTIPY_CACHE_PATH: /opt/airflow/.cache
+    env_file:
+      - .env
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - .:/opt/airflow/project
+      - ~/.dbt:/opt/airflow/.dbt
+      - ./.cache:/opt/airflow/.cache
+    command: airflow scheduler
+
+volumes:
+  postgres_data:

@@ -15,7 +15,7 @@ default_args = {
 with DAG(
     dag_id="innerchart_pipeline",
     default_args=default_args,
-    schedule_interval="0 6 * * 0",  # every Sunday at 6am
+    schedule_interval="0 6 * * 0",  #Sunday 6am
     catchup=False,
     description="Weekly pipeline: Ingest → Transform → Load Snowflake → dbt",
 ) as dag:
