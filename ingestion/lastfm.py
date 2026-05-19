@@ -9,6 +9,8 @@ from botocore.exceptions import NoCredentialsError, ClientError
 
 load_dotenv()
 
+os.makedirs("data", exist_ok=True)
+
 lastfm_api = os.environ["LASTFM_API_KEY"]
 
 ###################### GET TOP ARTITS ##################################

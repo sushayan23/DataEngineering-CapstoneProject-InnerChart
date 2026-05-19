@@ -9,12 +9,16 @@ from botocore.exceptions import NoCredentialsError, ClientError
 load_dotenv()
 
 # Authenticate with Spotify using OAuth — requires user-top-read scope
+CACHE_PATH = os.environ.get("SPOTIPY_CACHE_PATH", ".cache")
+
 sp = spotipy.Spotify(
     auth_manager=SpotifyOAuth(
         client_id=os.environ["SPOTIFY_CLIENT_ID"],
         client_secret=os.environ["SPOTIFY_CLIENT_SECRET"],
         redirect_uri=os.environ["SPOTIFY_REDIRECT_URI"],
-        scope="user-top-read"
+        scope="user-top-read",
+        cache_path=CACHE_PATH,
+        open_browser=False,
     ),
     requests_timeout=60
 )
@@ -85,6 +89,7 @@ artists_df.to_parquet("data/spotify_top_artists.parquet", index=False)
 #print(f"Saved {len(artists_df)} top artists.")
 #print(artists_df.head())
 
+#s3 upload 
 try:
     s3.upload_file(
         Filename= "data/spotify_top_artists.parquet",
