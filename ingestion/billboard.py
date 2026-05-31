@@ -13,7 +13,7 @@ data = response.json()
 
 #create empty list to save data within it for DataFrame creation
 songs = []
-
+fetched_at = pd.Timestamp.now()
 chart_date = data["date"]
 for track in data["data"]:
     songs.append({
@@ -24,7 +24,7 @@ for track in data["data"]:
         "last_week": track["last_week"],
         "peak_position": track["peak_position"],
         "weeks_on_chart": track["weeks_on_chart"],
-        "fetched_at": pd.Timestamp.now()
+        "fetched_at": fetched_at
         })
     
 #create DataFrame and save data as parquet

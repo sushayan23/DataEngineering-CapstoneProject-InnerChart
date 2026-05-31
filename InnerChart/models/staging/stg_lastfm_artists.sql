@@ -5,7 +5,7 @@ select
     playcount::NUMBER as playcount,
     TRY_TO_TIMESTAMP_NTZ(fetched_at) as fetched_at
 from {{ source('streamingdata', 'lastfm_top_artists') }}
-where TO_DATE(TRY_TO_TIMESTAMP_NTZ(fetched_at)) = (
-    select MAX(TO_DATE(TRY_TO_TIMESTAMP_NTZ(fetched_at)))
+where TRY_TO_TIMESTAMP_NTZ(fetched_at) = (
+    select MAX(TRY_TO_TIMESTAMP_NTZ(fetched_at))
     from {{ source('streamingdata', 'lastfm_top_artists') }}
 )

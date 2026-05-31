@@ -23,14 +23,15 @@ response = requests.get(url)
 data = response.json()
 #pprint(data["artists"]["artist"][0]["name"])
 
+fetched_at = pd.Timestamp.now()
 artists_data = []
-for i, artist in enumerate(data["artists"]["artist"]):                                                                                                
+for i, artist in enumerate(data["artists"]["artist"]):
       artists_data.append({
-          "rank": i + 1,                                                                                                                                
+          "rank": i + 1,
           "artist": artist["name"],
           "listeners": artist["listeners"],
           "playcount": artist["playcount"],
-          "fetched_at": pd.Timestamp.now()
+          "fetched_at": fetched_at
       })                                                                                                                                                
    
 df_artists = pd.DataFrame(artists_data) 
@@ -59,15 +60,14 @@ tracks = response.json()
 #pprint(tracks["tracks"]["track"])
 
 tracks_data = []
-                                                                                                                                                        
-for i, track in enumerate(tracks["tracks"]["track"]):                                                                                                   
+for i, track in enumerate(tracks["tracks"]["track"]):
     tracks_data.append({
-        "rank": i + 1,                                                                                                                                
+        "rank": i + 1,
         "title": track["name"],
         "artist": track["artist"]["name"],
-        "listeners": track["listeners"],                                                                                                              
+        "listeners": track["listeners"],
         "playcount": track["playcount"],
-        "fetched_at": pd.Timestamp.now()
+        "fetched_at": fetched_at
     })                                                                                                                                                
                     
 df_tracks = pd.DataFrame(tracks_data) 
