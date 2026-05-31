@@ -7,3 +7,5 @@ python-dotenv
 s3fs
 snowflake-connector-python
 dbt-snowflake
+streamlit
+plotly

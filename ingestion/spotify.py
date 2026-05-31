@@ -30,6 +30,7 @@ os.makedirs("data", exist_ok=True)
 # Fetch the user's top 50 tracks for the medium-term window (approx. last 6 months) according to Spotify
 response = sp.current_user_top_tracks(limit=50, time_range="medium_term")
 
+fetched_at = pd.Timestamp.now()
 tracks_data = []
 for i, track in enumerate(response["items"]):
     tracks_data.append({
@@ -43,7 +44,7 @@ for i, track in enumerate(response["items"]):
         "duration_ms": track["duration_ms"],
         "explicit": track["explicit"],
         "time_range": "medium_term",
-        "fetched_at": pd.Timestamp.now(),
+        "fetched_at": fetched_at,
     })
 
 tracks_df = pd.DataFrame(tracks_data)
@@ -81,7 +82,7 @@ for i, artist in enumerate(artist_response["items"]):
         "popularity": artist.get("popularity"),
         "followers": artist.get("followers", {}).get("total"),
         "time_range": "medium_term",
-        "fetched_at": pd.Timestamp.now(),
+        "fetched_at": fetched_at,
     })
 
 artists_df = pd.DataFrame(artists_data)

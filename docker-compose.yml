@@ -90,5 +90,23 @@ services:
       - ./.cache:/opt/airflow/.cache
     command: airflow scheduler
 
+  streamlit:
+    build: .
+    container_name: innerchart_streamlit
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+    environment:
+      SPOTIPY_CACHE_PATH: /opt/airflow/.cache
+    env_file:
+      - .env
+    volumes:
+      - .:/opt/airflow/project
+      - ./.cache:/opt/airflow/.cache
+    ports:
+      - "8501:8501"
+    entrypoint: ["/bin/bash", "-c"]
+    command: ["streamlit run /opt/airflow/project/app.py --server.port 8501 --server.address 0.0.0.0"]
+
 volumes:
   postgres_data:
